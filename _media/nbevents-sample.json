@@ -1,0 +1,88 @@
+[
+	{
+		"originalId": "oai:www.openstarts.units.it:10077/21486",
+		"title": "L’analisi integrata di dati territoriali per la prevenzione e la tutela dei beni culturali e paesaggistici: il caso di studio di tre comuni abruzzesi",
+		"topic": "ENRICH/MORE/PID",
+		"trust": 1.0,
+		"message": {
+			"pids[0].type": "doi",
+			"pids[0].value": "10.13137/2282-572x/21486"
+		}
+	},
+	{
+		"originalId": "oai:www.openstarts.units.it:10077/8654",
+		"title": "Identification and characterization of CDH1 germline variants in sporadic gastric cancer patients and in individuals at risk of gastric cancer",
+		"topic": "ENRICH/MORE/PID",
+		"trust": 0.375,
+		"message": {
+			"pids[0].type": "pmid",
+			"pids[0].value": "24204729"
+		}
+	},
+	{
+		"originalId": "oai:www.openstarts.units.it:10077/16050",
+		"title": "The Impact of Longevity and Investment Risk on a Portfolio of Life Insurance Liabilities",
+		"topic": "ENRICH/MORE/OPENACCESS_VERSION",
+		"trust": 1.0,
+		"message": {
+			"instances[0].hostedby": "European Actuarial Journal",
+			"instances[0].instancetype": "0001",
+			"instances[0].license": "OPEN",
+			"instances[0].url": "http://dx.doi.org/10.1007/s13385-018-0175-5"
+		}
+	},
+	{
+		"originalId": "oai:www.openstarts.units.it:10077/16050",
+		"title": "The Impact of Longevity and Investment Risk on a Portfolio of Life Insurance Liabilities",
+		"topic": "ENRICH/MORE/PID",
+		"trust": 1.0,
+		"message": {
+			"pids[0].type": "doi",
+			"pids[0].value": "10.1007/s13385-018-0175-5"
+		}
+	},
+	{
+		"originalId": "oai:www.openstarts.units.it:10077/4558",
+		"title": "Indice dei nomi",
+		"topic": "ENRICH/MISSING/PID",
+		"trust": 0.375,
+		"message": {
+			"pids[0].type": "doi",
+			"pids[0].value": "10.4000/books.res.1515"
+		}
+	},
+	{
+		"originalId": "oai:www.openstarts.units.it:10077/4659",
+		"title": "A noncooperative mixed parabolic-elliptic system and positivity",
+		"topic": "ENRICH/MISSING/AUTHOR/ORCID",
+		"trust": 1.0,
+		"message": {
+			"creators[0].fullname": "Guido Sweers",
+			"creators[0].orcid": "0000-0003-0180-5890"
+		}
+	},
+	{
+		"originalId": "oai:www.openstarts.units.it:10077/24412",
+		"title": "La collezione numismatica",
+		"topic": "ENRICH/MISSING/ABSTRACT",
+		"trust": 1.0,
+		"message": {
+			"abstracts[0]": "Descrizione delle caratteristiche, dei criteri di raccolta e del valore documentario per la conoscenza della storia romana delle Collezione Numismatica raccolta dal Fusignanese Carlo Piancastelli e conservata nei Musei di Forlì."
+		}
+	},
+	{
+		"originalId": "oai:www.openstarts.units.it:10077/21838",
+		"title": "Egypt, crossroad of translations and literary interweavings (3rd-6th centuries). A reconsideration of earlier Coptic literature",
+		"topic": "ENRICH/MORE/PROJECT",
+		"trust": 1.0,
+		"message": {
+			"projects[0].acronym": "PAThs",
+			"projects[0].code": "687567",
+			"projects[0].funder": "EC",
+			"projects[0].fundingProgram": "H2020",
+			"projects[0].jurisdiction": "EU",
+			"projects[0].openaireId": "40|corda__h2020::6e32f5eb912688f2424c68b851483ea4",
+			"projects[0].title": "Tracking Papyrus and Parchment Paths: An Archaeological Atlas of Coptic Literature.\nLiterary Texts in their Geographical Context: Production, Copying, Usage, Dissemination and Storage"
+		}
+	}
+]

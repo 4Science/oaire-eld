@@ -1,0 +1,16 @@
+<!-- docs/_sidebar.md -->
+
+* [Home](/)
+* [Data Correction](data-correction.md)
+    * [Data Source](data-correction?id=data-source)
+    * [Repository Manager UI](data-correction?id=repository-manager-ui)
+    * [Processing the decisions](data-correction?id=processing-the-decisions)
+    * [REST Contract ](data-correction?id=rest-contract)
+* [Publication claim](publication-claim.md)
+    * [Data Source](publication-claim?id=data-source)
+    * [Repository Manager UI](publication-claim?id=repository-manager-ui)
+    * [Researcher UI](publication-claim?id=researcher-ui)
+    * [Processing the decisions](publication-claim?id=processing-the-decisions)
+    * [REST Contract ](publication-claim?id=rest-contract)
+* [Source code & license](sourcecode-license.md)
+* [About](about.md)

@@ -27,7 +27,7 @@ The JSON file contains an array of JSON Events, where each event has the followi
     }
 ```
 
-please note that the message sub-object depends on the event TOPIC. A more complete set of sample events can be seen here: [nbevents-sample.json](/_media/nbevents-sample.json)
+please note that the message sub-object depends on the event TOPIC. A more complete set of sample events can be seen here: [nbevents-sample.json](/oaire-eld/_media/nbevents-sample.json ':ignore')
 
 The java class `org.dspace.app.nbevent.NBEventsCli` provides a convenient method to process this json file loading the data in a dedicated new DSpace SOLR Core named **nbevent**, to use it run from the dspace installation bin folder
 

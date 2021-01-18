@@ -29,9 +29,13 @@ The JSON file contains an array of JSON Events, where each event has the followi
 
 please note that the message sub-object depends on the event TOPIC. A more complete set of sample events can be seen here: [nbevents-sample.json](/oaire-eld/_media/nbevents-sample.json ':ignore')
 
-The java class `org.dspace.app.nbevent.NBEventsCli` provides a convenient method to process this json file loading the data in a dedicated new DSpace SOLR Core named **nbevent**, to use it run from the dspace installation bin folder
+The java class `org.dspace.app.nbevent.NBEventsRunnableCli` provides a convenient method to process this json file loading the data in a dedicated new DSpace SOLR Core named **nbevent**, to use it run from the dspace installation bin folder
 
 ```./dspace import-nbevents -f <path-to-the-json-file>```
+
+the same script is also available via the administrative runnable process UI
+
+![notification broker load script UI](/_media/nb-ui-script.png)
 
 The `config/modules/oaire-nbevents.cfg` file allows to configure witch Topic should be processed, indeed some Topics could have no configured action on the repository
 
@@ -41,7 +45,7 @@ import.topic = ENRICH/MORE/PID
 import.topic = ...
 ```
 
-and an URL to acknowledge the decision made by the Repository Manager via the DSpace UI
+and a list of URLs to acknowledge the decision made by the Repository Manager via the DSpace UI
 
 ```
 acknowledge-url = https://httpdump.io/...
@@ -86,6 +90,18 @@ The main page list the topics found in the events loaded in the system
 
 ![notification broker topics](/_media/nb-topics.png)
 
+By default the system sort the events within a topic by trust descending (most accurate correction first)
+
+![notification broker events sorted by trust DESC](/_media/nb-events-sorted-trust-desc.png)
+
+but it is also possible to revert the direction 
+
+![notification broker sorting events](/_media/nb-events-sorting.png)
+
+getting the less accurate correction first
+
+![notification broker events sorted by trust ASC](/_media/nb-events-sorted-trust-asc.png)
+
 Below a screen of possible missing abstract events, where the repository manager will be able to check the current local publication record clicking on the title and scroll the abstract reported by OpenAIRE. Accepting the suggestion, the local record will be enriched with this extra information. The Ignore suggestions button is instead intent to be used to discard a notification without flagging it as wrong. This is important because the OpenAIRE Graph process the data from the repository not in real-time so it can happen that a local record has been updated recently with information not yet known to OpenAIRE. In such scenarios it could be possible that the repository manager prefers to keep the local version but this should be not reported to OpenAIRE a wrong suggestion as this feedback can be used to improve the OpenAIRE guessing capabilities. In contrast a wrong suggestion should be rejected so that OpenAIRE can learn from that.
 
 ![notification broker simple metadata event](/_media/nb-abstract-detail.png)
@@ -107,7 +123,7 @@ if the related project is found in the system the repository manager can proceed
 ## Processing the decisions
 The backend is responsible to process the repository manager decisions taken over the received events. As noted in the REST Contract the decision is recorded *PATCH*ing the DSpace *nbevents* REST resource updating its status. 
 
-If a `acknowledge-url` is configured in the `oaire-nbevents.cfg` configuration file a POST call to the URL with the following JSON payload will be performed
+If one or more `acknowledge-url` are configured in the `oaire-nbevents.cfg` configuration file a POST call to each URL with the following JSON payload will be performed
 
 ```json 
 {

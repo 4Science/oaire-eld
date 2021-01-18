@@ -10,19 +10,27 @@ In the original plan an integration with the [ReCiter open source platform](http
 
 ## Data source
 The openAIRE Publication REST API are used to retrieve publication that could be authored by researcher at the Institution. The openAIRE Publication REST API are queried using the names known by the repository for its researchers, the retrieve list is later reduced passing identified publications to a pipeline of JAVA classes that can promote or reject his inclusion in the suggestion list. Publications previously discarded by the researcher are automatically filter out avoiding to re-present the same publication again and again.
-This pipelines allow a future refinement of the procedure introducing for instance support for researcher preference that could exclude specific sources (pubmed, crossref, datacite, etc.) or keywords/subjects unrelated with his research interests.
-Right now a single filter is in place, to validate the finding against the researcher name as it has been found that searching the openAIRE Publication API for author such as Bollini Susanna would find also publications co-authored by Andrea Bollini and Susanna Mornati.
 
-The pipeline is defined in the `/config/spring/api/oaire-publications.xml` spring configuration file as follow
+This pipelines allow a future refinement of the procedure introducing for instance support for researcher preference that could exclude specific sources (pubmed, crossref, datacite, etc.) or keywords/subjects unrelated with his research interests.
+Right now a single scorer is in place, to validate the finding against the researcher name as it has been found that searching the openAIRE Publication API for author such as Bollini Susanna would find also publications co-authored by Andrea Bollini and Susanna Mornati.
+
+The pipeline is defined in the `/config/spring/api/oaire-publications.xml` spring configuration file inside the OAIREPublicationLoader bean
 
 ```xml
-    <bean
-        id="org.dspace.app.suggestion.oaire.OAIREPublicationApproverService"
-        class="org.dspace.app.suggestion.oaire.OAIREPublicationApproverServiceImpl">
+    <bean id="org.dspace.app.suggestion.oaire.OAIREPublicationLoader"
+        class="org.dspace.app.suggestion.oaire.OAIREPublicationLoader">
+        <property name="names">
+            <list>
+                <value>dc.title</value>
+                <value>crisrp.name</value>
+                <value>crisrp.translated</value>
+                <value>crisrp.variants</value>
+            </list>
+        </property>
         <property name="pipeline">
             <list>
                 <bean
-                    class="org.dspace.app.suggestion.oaire.AuthorNamesApprover">
+                    class="org.dspace.app.suggestion.oaire.AuthorNamesScorer">
                     <property name="contributorMetadata">
                         <list>
                             <value>dc.contributor.author</value>
@@ -42,46 +50,62 @@ The pipeline is defined in the `/config/spring/api/oaire-publications.xml` sprin
     </bean>
 ```
 
-in the same file is also defined the loader used to retrieve the data from the openAIRE Research Graph and more specifically the metadata to use to build the search query
+the names attribute defines the metadata to use to build the search query over the openAIRE Research Graph to retrieve the list of publications to evaluate as suggestions. It is responsibility of the scorers defined in the pipeline to compute a score for each retrieved publication and eventually discard the ones that are not good enough.
+
+The dspace script class `org.dspace.app.suggestion.OAIREPublicationLoaderRunnableCli` is used to run the queries and store the identified publication in the dedicated SOLR core **suggestion** for further processing.
+
+The dspace script can be run both from the CLI than from the UI.
+
+To run the loader from the dspace installation bin folder
+
+```
+./dspace import-oaire-suggestions [-s uuid-of-single-researcher]
+```
+
+without the `s` parameter the script will process all the researcher available in the system.
+
+The script can be also run from the Script UI so that it is also available to repository manager that cannot be access the CLI
+
+![publication claim suggestions retrieval script UI](/_media/suggestion-ui-script.png)
+
+Two external source providers, openAIRE Publications By Title and By Author have been defined according to the standard [DSpace 7 External Sources framework](https://github.com/DSpace/Rest7Contract/blob/main/external-authority-sources.md). It is activated in the `config/spring/api/external-services.xml` as follow
 
 ```xml
-    <bean id="org.dspace.app.suggestion.oaire.OAIREPublicationLoader"
-        class="org.dspace.app.suggestion.oaire.OAIREPublicationLoader">
-        <property name="names">
+     <bean id="openaireLiveImportDataProviderByAuthor" class="org.dspace.external.provider.impl.LiveImportDataProvider">
+        <property name="metadataSource" ref="openaireImportServiceByAuthor"/>
+        <property name="sourceIdentifier" value="openaire"/>
+        <property name="recordIdMetadata" value="dc.identifier.other"/>
+        <property name="supportedEntityTypes">
             <list>
-                <value>dc.title</value>
-                <value>crisrp.name</value>
-                <value>crisrp.translated</value>
-                <value>crisrp.variants</value>
+                <value>Publication</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="openaireLiveImportDataProviderByTitle" class="org.dspace.external.provider.impl.LiveImportDataProvider">
+        <property name="metadataSource" ref="openaireImportServiceByTitle"/>
+        <property name="sourceIdentifier" value="openaireTitle"/>
+        <property name="recordIdMetadata" value="dc.identifier.other"/>
+        <property name="supportedEntityTypes">
+            <list>
+                <value>Publication</value>
             </list>
         </property>
     </bean>
 ```
-    
-The java class `org.dspace.app.suggestion.oaire.OAIREPublicationLoaderCli` is used to run the queries and store the identified publication in a temporary store for further processing.
-As temporary storage for the identified publications a dedicated new DSpace SOLR Core named **suggestion** has been defined. 
-To run the loader from the dspace installation bin folder
 
-```./dspace import-oaire-suggestions [-s uuid-of-single-researcher]```
-
-without the `s` parameter the script will process all the researcher available in the system.
-
-An external source provider, openAIRE Publications has been defined according to the standard [DSpace 7 External Sources framework](https://github.com/DSpace/Rest7Contract/blob/main/external-authority-sources.md). It is activated in the `config/spring/api/external-services.xml` as follow
-
-```xml
-    <bean id="openaireLiveImportDataProvider" class="org.dspace.external.provider.impl.LiveImportDataProvider">
-        <property name="metadataSource" ref="openaireImportService"/>
-        <property name="sourceIdentifier" value="openaire"/>
-        <property name="recordIdMetadata" value="dc.identifier.other"/>
-    </bean>
-```
-
-with the importer service defined via the Live Import Framework in `/dspace-api/src/main/resources/spring/spring-dspace-addon-import-services.xml` as follow
+with the importer services defined via the Live Import Framework in `/dspace-api/src/main/resources/spring/spring-dspace-addon-import-services.xml` as follow
 
 ```
-    <bean id="openaireImportService"
+    <bean id="openaireImportServiceByAuthor"
           class="org.dspace.importer.external.openaire.service.OpenAireImportMetadataSourceServiceImpl" scope="singleton">
         <property name="metadataFieldMapping" ref="openaireMetadataFieldMapping"/>
+        <property name="queryParam" value="author"/>
+    </bean>
+    <bean id="openaireImportServiceByTitle"
+          class="org.dspace.importer.external.openaire.service.OpenAireImportMetadataSourceServiceImpl" scope="singleton">
+        <property name="metadataFieldMapping" ref="openaireMetadataFieldMapping"/>
+        <property name="queryParam" value="title"/>
     </bean>
     <bean id="openaireMetadataFieldMapping"
           class="org.dspace.importer.external.openaire.service.metadatamapping.OpenAireFieldMapping">
@@ -97,15 +121,19 @@ The SOLR **suggestion** core has the following structure
 ```
 <fields>
     <field name="source" type="string" indexed="true" stored="true" omitNorms="true" />
+    <field name="suggestion_fullid" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="suggestion_id" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="target_id" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="title" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="date" type="string" indexed="true" stored="true" omitNorms="true" />
-    <field name="contributors" type="string" indexed="true" stored="true" omitNorms="true" />
+    <field name="display" type="string" indexed="true" stored="true" omitNorms="true" />
+    <field name="contributors" type="string" indexed="true" stored="true" omitNorms="true" multiValued="true" />
     <field name="abstract" type="string" indexed="true" stored="true" omitNorms="true" />
-    <field name="category" type="string" indexed="true" stored="true" omitNorms="true" />
+    <field name="category" type="string" indexed="true" stored="true" omitNorms="true" multiValued="true"/>
     <field name="external-uri" type="string" indexed="true" stored="true" omitNorms="true" />
-    <field name="rejected" type="boolean" indexed="true" stored="true" omitNorms="true" />
+    <field name="processed" type="boolean" indexed="true" stored="true" omitNorms="true" />
+    <field name="score" type="double" indexed="true" stored="true" omitNorms="true" />
+    <field name="evidences" type="string" indexed="false" stored="true" omitNorms="true" />
 </fields>    
 <uniqueKey>suggestion_id</uniqueKey>
 ```

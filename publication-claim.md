@@ -156,9 +156,13 @@ The resulting UI is accessible for the Repository Manager from the administrativ
 A list of local profiles with candidate publications will be shown so that the repository manager can review them directly or support the researcher:
 ![source-dashboard](/_media/source-dashboard.jpg)
 
-For each candidate article it is possible to confirm the authorship importing the data locally or reject the suggestion
+For each candidate the available suggestions are shown, sorted by the evaluated total score (summing up all the processed evidences ). The suggested authorship of each article can be confirmed importing the data locally, or rejected. This operation can be performed individually but also simultaneously for all the selected suggestions, speeding up the process. The decision can also be guided by inspecting the matching evidences which are displayed for each suggestion by clicking on 'See evidence'
 
-![source-suggesions](/_media/source-suggestions.jpg)
+![source-suggesions](/_media/source-suggestions.png)
+
+The suggestions list can be sorted by total score descending or ascending (highlighting the weakest candidates).
+
+![source-suggesions](/_media/suggestions-sorting.png)
 
 ## Researcher UI
 The single researcher is also allowed to directly review his suggestions. Upon login he is informed about the availability of suggestions from one or more providers and can proceed to review the suggestions list in the same way than the Repository Manager

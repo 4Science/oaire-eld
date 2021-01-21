@@ -11,20 +11,28 @@ In the original plan an integration with the [ReCiter open source platform](http
 ## Data source
 The openAIRE Publication REST API are used to retrieve publication that could be authored by researcher at the Institution. The openAIRE Publication REST API are queried using the names known by the repository for its researchers, the retrieve list is later reduced passing identified publications to a pipeline of JAVA classes that can promote or reject his inclusion in the suggestion list. Publications previously discarded by the researcher are automatically filter out avoiding to re-present the same publication again and again.
 
-This pipelines allow a future refinement of the procedure introducing for instance support for researcher preference that could exclude specific sources (pubmed, crossref, datacite, etc.) or keywords/subjects unrelated with his research interests.
-Right now a single scorer is in place, to validate the finding against the researcher name as it has been found that searching the openAIRE Publication API for author such as Bollini Susanna would find also publications co-authored by Andrea Bollini and Susanna Mornati.
-
-The pipeline is defined in the `/config/spring/api/oaire-publications.xml` spring configuration file inside the OAIREPublicationLoader bean
+The suggestion providers are defined in the `dspace/config/spring/api/suggestions.xml` spring configuration file. Indeed, the system can be extended to more provider than the one implemented to query the OpenAIRE Researcher Graph
 
 ```xml
-    <bean id="org.dspace.app.suggestion.oaire.OAIREPublicationLoader"
-        class="org.dspace.app.suggestion.oaire.OAIREPublicationLoader">
+    <util:map id="suggestionProviders" map-class="java.util.HashMap" 
+              key-type="java.lang.String" value-type="org.dspace.app.suggestion.SuggestionProvider">
+        <entry key="oaire" value-ref="OAIREPublicationLoader" />
+    </util:map>
+
+    <bean id="OAIREPublicationLoader" class="org.dspace.app.suggestion.oaire.OAIREPublicationLoader">
+        <property name="sourceName" value="oaire" />
+        <property name="primaryProvider" ref="openaireLiveImportDataProviderByAuthor" />
+        <property name="otherProviders">
+            <list>
+                <ref bean="openaireLiveImportDataProviderByTitle"/>
+            </list>
+        </property>
         <property name="names">
             <list>
                 <value>dc.title</value>
                 <value>crisrp.name</value>
-                <value>crisrp.translated</value>
-                <value>crisrp.variants</value>
+                <value>crisrp.name.translated</value>
+                <value>crisrp.name.variant</value>
             </list>
         </property>
         <property name="pipeline">
@@ -40,17 +48,33 @@ The pipeline is defined in the `/config/spring/api/oaire-publications.xml` sprin
                         <list>
                             <value>dc.title</value>
                             <value>crisrp.name</value>
-                            <value>crisrp.translated</value>
-                            <value>crisrp.variants</value>
+                            <value>crisrp.name.translated</value>
+                            <value>crisrp.name.variant</value>
                         </list>
                     </property>
                 </bean>
+                <bean
+                    class="org.dspace.app.suggestion.oaire.DateScorer">
+                    <property name="birthDateMetadata" value="person.birthDate" />
+                    <property name="educationDateMetadata" value="crisrp.education.end" />
+                    <property name="publicationDateMetadata" value="dc.date.issued" />
+                </bean>    
             </list>
         </property>
     </bean>
 ```
 
-the names attribute defines the metadata to use to build the search query over the openAIRE Research Graph to retrieve the list of publications to evaluate as suggestions. It is responsibility of the scorers defined in the pipeline to compute a score for each retrieved publication and eventually discard the ones that are not good enough.
+Each suggestionProvider is identified by an unique name used as key in the `suggestionProviders` map.
+
+The OpenAIRE implementation is represented by the java class `org.dspace.app.suggestion.oaire.OAIREPublicationLoader` and configured via the following properties:
+* the primaryProvider property defines which DSpace ExternalDataProvider use to retrieve the record
+* the otherProviders property defines which DSpace ExternalDataProviders other than the primary could offer the same records. This is used to automatically remove from the suggestion list records that are imported manually by the researcher from these other providers
+* the names property defines the metadata to use to build the search query over the openAIRE Research Graph to retrieve the list of publications to evaluate as suggestions. It is responsibility of the scorers defined in the pipeline to compute a score for each retrieved publication and eventually discard the ones that are not good enough.
+* the pipelines property allows a future refinement of the procedure introducing for instance support for researcher preference that could exclude specific sources (pubmed, crossref, datacite, etc.) or keywords/subjects unrelated with his research interests.
+Right now two scorers are in place:
+    * `AuthorNamesScorer` to validate the finding against the researcher name as it has been found that searching the openAIRE Publication API for author such as Bollini Susanna would find also publications co-authored by Andrea Bollini and Susanna Mornati;
+    * `DateScorer` to validate the finding against a guessed range of years that the system expect to be the productivity or interested windows for the researcher. This range is calculated using the graduation date if available or the birthday but can be also set manually by the researcher in his profile  
+
 
 The dspace script class `org.dspace.app.suggestion.OAIREPublicationLoaderRunnableCli` is used to run the queries and store the identified publication in the dedicated SOLR core **suggestion** for further processing.
 
@@ -132,7 +156,7 @@ The SOLR **suggestion** core has the following structure
     <field name="category" type="string" indexed="true" stored="true" omitNorms="true" multiValued="true"/>
     <field name="external-uri" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="processed" type="boolean" indexed="true" stored="true" omitNorms="true" />
-    <field name="score" type="double" indexed="true" stored="true" omitNorms="true" />
+    <field name="trust" type="double" indexed="true" stored="true" omitNorms="true" />
     <field name="evidences" type="string" indexed="false" stored="true" omitNorms="true" />
 </fields>    
 <uniqueKey>suggestion_id</uniqueKey>
@@ -151,12 +175,15 @@ The detailed REST contract for such endpoints are available on the [4Science Res
 ## Repository Manager UI
 The resulting UI is accessible for the Repository Manager from the administrative menu. As entry point for the features a “Notifications” menu entry has been added to the DSpace administrative menu, from where the repository manager will be able to manage the suggestions got from the different sources.
 
-![menu](/_media/admin-menu.jpg)
+![menu](/_media/admin-menu.png)
 
 A list of local profiles with candidate publications will be shown so that the repository manager can review them directly or support the researcher:
 ![source-dashboard](/_media/source-dashboard.jpg)
 
-For each candidate the available suggestions are shown, sorted by the evaluated total score (summing up all the processed evidences ). The suggested authorship of each article can be confirmed importing the data locally, or rejected. This operation can be performed individually but also simultaneously for all the selected suggestions, speeding up the process. The decision can also be guided by inspecting the matching evidences which are displayed for each suggestion by clicking on 'See evidence'
+For each candidate the available suggestions are shown, sorted by the evaluated total score (summing up all the processed evidences ). Using the buttom see evidence is possible to get detailed information about the score  
+![suggestion-evidences](/_media/suggestion-evidences.jpg)
+
+The suggested authorship of each article can be confirmed importing the data locally, or rejected. This operation can be performed individually but also simultaneously for all the selected suggestions, speeding up the process. The decision can also be guided by inspecting the matching evidences which are displayed for each suggestion by clicking on 'See evidence'
 
 ![source-suggesions](/_media/source-suggestions.png)
 
@@ -165,9 +192,14 @@ The suggestions list can be sorted by total score descending or ascending (highl
 ![source-suggesions](/_media/suggestions-sorting.png)
 
 ## Researcher UI
-The single researcher is also allowed to directly review his suggestions. Upon login he is informed about the availability of suggestions from one or more providers and can proceed to review the suggestions list in the same way than the Repository Manager
+The single researcher is also allowed to directly review his suggestions. Upon login he is informed about the availability of suggestions from one or more providers
 
 ![source-suggesions](/_media/suggestion-login.jpg)
+
+and can proceed to review the suggestions list in the same way than the Repository Manager, the notification message is also always available at the top of the mydspace
+
+![source-suggesions](/_media/suggestion-mydspace.jpg)
+
 
 ## Processing the decisions
 The backend is responsible to process the repository manager or researcher decisions taken over the received suggestions. 

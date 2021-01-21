@@ -48,7 +48,7 @@ import.topic = ...
 and a list of URLs to acknowledge the decision made by the Repository Manager via the DSpace UI
 
 ```
-acknowledge-url = https://httpdump.io/...
+oaire-nbevents.acknowledge-url = https://httpdump.io/...
 ```
 
 Such configuration file is also expected in future to hold settings related to the delivery mechanism (such as the URL from where the json file can be download, the credentials to use, etc.)   
@@ -84,7 +84,7 @@ The detailed REST contract for such endpoints are available on the [4Science Res
 ## Repository Manager UI
 The resulting UI is accessible from the administrative menu. As entry point for the features a “Notifications” menu entry has been added to the DSpace administrative menu, from where the repository manager will be able to manage the OpenAIRE subscription and access the details of received events.
 
-![menu](/_media/admin-menu.jpg)
+![menu](/_media/admin-menu.png)
 
 The main page list the topics found in the events loaded in the system
 
@@ -101,6 +101,10 @@ but it is also possible to revert the direction
 getting the less accurate correction first
 
 ![notification broker events sorted by trust ASC](/_media/nb-events-sorted-trust-asc.png)
+
+In the detail view of events in a specific topic links always open in a new tab so that the repository manager can quickly check the details without loosing the overview
+
+![notification broker links to details about target and source](/_media/nb-project-detail.png)
 
 Below a screen of possible missing abstract events, where the repository manager will be able to check the current local publication record clicking on the title and scroll the abstract reported by OpenAIRE. Accepting the suggestion, the local record will be enriched with this extra information. The Ignore suggestions button is instead intent to be used to discard a notification without flagging it as wrong. This is important because the OpenAIRE Graph process the data from the repository not in real-time so it can happen that a local record has been updated recently with information not yet known to OpenAIRE. In such scenarios it could be possible that the repository manager prefers to keep the local version but this should be not reported to OpenAIRE a wrong suggestion as this feedback can be used to improve the OpenAIRE guessing capabilities. In contrast a wrong suggestion should be rejected so that OpenAIRE can learn from that.
 
@@ -119,6 +123,12 @@ The system will attempt to identify a local record for the information reported 
 if the related project is found in the system the repository manager can proceed to accept the correction linking the publication to the local copy of the project otherwise it is possible to import and connect the project in one click as shown in the first project related screen above
 
 ![notification broker linked entity event select](/_media/nb-project-accept.png)
+
+For PID related events, the system offers where available (doi, handle, pmid, pmc, arXiv, NCID, urn/url) the resolution of the identifier to a details page
+
+![notification broker linked doi](/_media/doi-link.png)
+
+![notification broker linked doi](/_media/handle-link.png)
 
 ## Processing the decisions
 The backend is responsible to process the repository manager decisions taken over the received events. As noted in the REST Contract the decision is recorded *PATCH*ing the DSpace *nbevents* REST resource updating its status. 

@@ -12,5 +12,5 @@
     * [Researcher UI](publication-claim?id=researcher-ui)
     * [Processing the decisions](publication-claim?id=processing-the-decisions)
     * [REST Contract ](publication-claim?id=rest-contract)
-* [Source code & license](sourcecode-license.md)
+* [Installation, Source code & license](installation-sourcecode-license.md)
 * [About](about.md)

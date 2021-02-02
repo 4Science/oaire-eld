@@ -209,6 +209,8 @@ to the definition of the metadata used in linked entity for Project related even
      </bean>
 ```
 
+> the above configuration is the default for DSpace-CRIS, for a plain DSpace the NBEntityMetadataAction bean must define the attribute relation instead than metadata. The relation must match the rightward name of the relation used to link a publication with a project that is `isPublicationOfProject` in the openaire4-relatioship.xml proposal.
+
 ## Rest Contract
 Two REST endpoints have been developed to interact with the notification broker events
 

@@ -192,9 +192,11 @@ The suggestions list can be sorted by total score descending or ascending (highl
 ![source-suggesions](/_media/suggestions-sorting.png)
 
 ## Researcher UI
+> This functionality requires to implement a mechanism to uniquely link user accounts with Person profiles. Such mechanism is implemented out-of-box in DSpace-CRIS. Where the link is not implemented, the Repository Manager UI can still be used.
+
 The single researcher is also allowed to directly review his suggestions. Upon login he is informed about the availability of suggestions from one or more providers
 
-![alert-login](/_media/suggestion-login.ng)
+![alert-login](/_media/suggestion-login.png)
 
 and can proceed to review the suggestions list in the same way than the Repository Manager, the notification message is also always available at the top of the mydspace
 

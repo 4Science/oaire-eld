@@ -181,7 +181,7 @@ A list of local profiles with candidate publications will be shown so that the r
 ![source-dashboard](/_media/source-dashboard.jpg)
 
 For each candidate the available suggestions are shown, sorted by the evaluated total score (summing up all the processed evidences ). Using the buttom see evidence is possible to get detailed information about the score  
-![suggestion-evidences](/_media/suggestion-evidences.jpg)
+![suggestion-evidences](/_media/suggestion-evidences.png)
 
 The suggested authorship of each article can be confirmed importing the data locally, or rejected. This operation can be performed individually but also simultaneously for all the selected suggestions, speeding up the process. The decision can also be guided by inspecting the matching evidences which are displayed for each suggestion by clicking on 'See evidence'
 
@@ -194,11 +194,11 @@ The suggestions list can be sorted by total score descending or ascending (highl
 ## Researcher UI
 The single researcher is also allowed to directly review his suggestions. Upon login he is informed about the availability of suggestions from one or more providers
 
-![source-suggesions](/_media/suggestion-login.jpg)
+![alert-login](/_media/suggestion-login.ng)
 
 and can proceed to review the suggestions list in the same way than the Repository Manager, the notification message is also always available at the top of the mydspace
 
-![source-suggesions](/_media/suggestion-mydspace.jpg)
+![alert-mydspace](/_media/suggestion-mydspace.png)
 
 
 ## Processing the decisions

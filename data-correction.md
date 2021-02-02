@@ -79,7 +79,7 @@ Two REST endpoints have been developed to expose the data so collected
 * `/api/integration/nbtopics` to provide access to summary information about the available topic and number of events to deal with
 * `/api/integration/nbevents` to provide access to the detailed events so that they can be reviewed and managed by the repository manager
 
-The detailed REST contract for such endpoints are available on the [4Science Rest7Contract repository](https://github.com/4Science/Rest7Contract/tree/oaire-eld) and embedded at the bottom of the page for easy reference.
+The detailed REST contract for such endpoints are available on the [4Science Rest7Contract repository](https://github.com/4Science/Rest7Contract/tree/dspace-oaire-eld) and embedded at the bottom of the page for easy reference.
 
 ## Repository Manager UI
 The resulting UI is accessible from the administrative menu. As entry point for the features a “Notifications” menu entry has been added to the DSpace administrative menu, from where the repository manager will be able to manage the OpenAIRE subscription and access the details of received events.
@@ -216,8 +216,8 @@ Two REST endpoints have been developed to interact with the notification broker 
 * `/api/integration/nbevents` to provide access to the detailed events so that they can be reviewed and managed by the repository manager
 
 ### /api/integration/nbtopics
-[nbtopics endpoint](https://raw.githubusercontent.com/4Science/Rest7Contract/oaire-eld/nbtopics.md ':include')
+[nbtopics endpoint](https://raw.githubusercontent.com/4Science/Rest7Contract/dspace-oaire-eld/nbtopics.md ':include')
 
 ### /api/integration/nbevents
-[nbevents endpoint](https://raw.githubusercontent.com/4Science/Rest7Contract/oaire-eld/nbevents.md ':include')
+[nbevents endpoint](https://raw.githubusercontent.com/4Science/Rest7Contract/dspace-oaire-eld/nbevents.md ':include')
  

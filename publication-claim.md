@@ -170,7 +170,7 @@ Three endpoints have been designed to expose the result of the processing to the
 * `/api/integration/suggestiontargets` to provide access to summary information about the available suggestions for a specific researcher
 * `/api/integration/suggestions` to provide access to the detailed suggestions so that they can be reviewed and managed by the repository manager or the researcher to whom they related
 
-The detailed REST contract for such endpoints are available on the [4Science Rest7Contract repository](https://github.com/4Science/Rest7Contract/tree/oaire-eld) and embedded at the bottom of the page for easy reference.
+The detailed REST contract for such endpoints are available on the [4Science Rest7Contract repository](https://github.com/4Science/Rest7Contract/tree/dspace-oaire-eld) and embedded at the bottom of the page for easy reference.
 
 ## Repository Manager UI
 The resulting UI is accessible for the Repository Manager from the administrative menu. As entry point for the features a “Notifications” menu entry has been added to the DSpace administrative menu, from where the repository manager will be able to manage the suggestions got from the different sources.
@@ -213,10 +213,10 @@ Three endpoints have been designed to interact with the publication claim servic
 * `/api/integration/suggestions` to provide access to the detailed suggestions so that they can be reviewed and managed by the repository manager or the researcher to whom they related
 
 ### /api/integration/suggestionsources
-[suggestionsources endpoint](https://raw.githubusercontent.com/4Science/Rest7Contract/oaire-eld/suggestionsources.md ':include')
+[suggestionsources endpoint](https://raw.githubusercontent.com/4Science/Rest7Contract/dspace-oaire-eld/suggestionsources.md ':include')
 
 ### /api/integration/suggestiontargets
-[suggestiontargets endpoint](https://raw.githubusercontent.com/4Science/Rest7Contract/oaire-eld/suggestiontargets.md ':include')
+[suggestiontargets endpoint](https://raw.githubusercontent.com/4Science/Rest7Contract/dspace-oaire-eld/suggestiontargets.md ':include')
  
 ### /api/integration/suggestions
-[suggestions endpoint](https://raw.githubusercontent.com/4Science/Rest7Contract/oaire-eld/suggestions.md ':include')
+[suggestions endpoint](https://raw.githubusercontent.com/4Science/Rest7Contract/dspace-oaire-eld/suggestions.md ':include')

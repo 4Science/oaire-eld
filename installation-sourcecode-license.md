@@ -14,7 +14,7 @@ cp -R /dspace-install/solr/suggestion /opt/solr/data/
 sudo systemctl start solr
 ```
 
-The [Data Correction Service](data-correction.md) requires a json file produced for your repository by the OpenAIRE Team periodically upon request, please [get in touch with them](https://www.openaire.eu/support/helpdesk) to enable the service for your repository.
+The [Data Correction Service](data-correction.md) requires a json file produced for your repository by the OpenAIRE Team periodically upon request. Please reach them by email **( helpdesk AT openaire.eu )** to enable the service for your repository specifying the **[OpenDOAR identifier of your repository](https://v2.sherpa.ac.uk/opendoar/)** and the **email address** where the json file should be sent.
 
 Out-of-box both services have configuration that work at the best for most Institutions but you can consult the specific sections to learn more about the configuration options for the [Publication Claim Service](publication-claim.md) and the [Data Correction Service](data-correction.md) that allow you for instance to change the metadata mapping, the scorer algorithm used to evaluate suggestion, which topics should be filtered from the Notification Broker and how the different correction should be applied to your local data
 
